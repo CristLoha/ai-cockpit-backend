@@ -1,6 +1,7 @@
 import express from 'express';
 import cors from 'cors';
-import chatRoutes from './src/routes/chatRoutes.js';
+import analysisRoutes from './src/routes/analysisRoutes.js';
+import historyRoutes from './src/routes/historyRoutes.js';
 
 const app = express();
 const port = 3000;
@@ -13,7 +14,8 @@ app.get('/', (req, res) => {
 });
 
 
-app.use('/api', chatRoutes);
+app.use('/api', analysisRoutes);
+app.use('/api', historyRoutes);
 
 app.listen(port, () => {
     console.log(`Server arsitektur baru siap di http://localhost:${port}`);
