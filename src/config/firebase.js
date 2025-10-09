@@ -1,7 +1,11 @@
 import admin from 'firebase-admin';
 
 const initializeFirebase = async () => {
-  // Hanya inisialisasi jika belum ada aplikasi yang berjalan
+  console.log("==============================================");
+  console.log("MEMULAI PROSES DEBUGGING FIREBASE ENV");
+  console.log("Apakah FIREBASE_SERVICE_ACCOUNT ada isinya? ->", !!process.env.FIREBASE_SERVICE_ACCOUNT);
+  console.log("Tipe datanya apa? ->", typeof process.env.FIREBASE_SERVICE_ACCOUNT);
+  console.log("==============================================");
   if (!admin.apps.length) {
     try {
       if (process.env.FIREBASE_SERVICE_ACCOUNT) {
