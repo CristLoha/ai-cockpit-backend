@@ -1,13 +1,9 @@
 import admin from '../config/firebase.js';
 import { generateAiResponse } from '../services/geminiService.js';
 import { PDFExtract } from 'pdf.js-extract';
-import { createRequire } from 'node:module';
-import fs from 'fs/promises';
-import path from 'path';
 
 const db = admin.firestore();
-const require = createRequire(import.meta.url);
-const mammoth = require('mammoth');
+import mammoth from 'mammoth';
 const GUEST_USAGE_LIMIT = 5;
 
 export const handleAnalysisRequest = async (req, res) => {
@@ -38,28 +34,21 @@ export const handleAnalysisRequest = async (req, res) => {
         }
     }
 
-    const tempDir = 'temp_uploads';
-    await fs.mkdir(tempDir, { recursive: true });
-
-
-    const tempFilePaths = [];
-
     try {
 
         const file = req.file;
         console.log(`[Analysis] Memproses file: ${file.originalname} (${file.mimetype})`);
-        const tempFilePath = path.join('temp_uploads', Date.now() + '-' + file.originalname);
-        tempFilePaths.push(tempFilePath);
-        await fs.writeFile(tempFilePath, file.buffer);
 
         let documentText = '';
         if (file.mimetype === 'application/pdf') {
             const pdfExtract = new PDFExtract();
-            const data = await pdfExtract.extract(tempFilePath, {});
+
+            const data = await pdfExtract.extract(file.buffer, {});
             console.log('[Analysis] Ekstraksi teks dari PDF selesai.');
             documentText = data.pages.map(page => page.content.map(item => item.str).join(' ')).join('\n\n');
         } else if (file.mimetype === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document') {
-            const { value } = await mammoth.extractRawText({ path: tempFilePath });
+
+            const { value } = await mammoth.extractRawText({ buffer: file.buffer });
             console.log('[Analysis] Ekstraksi teks dari DOCX selesai.');
             documentText = value;
         } else {
@@ -133,17 +122,5 @@ export const handleAnalysisRequest = async (req, res) => {
     } catch (error) {
         console.error("Analysis Controller Error:", error);
         res.status(500).json({ status: 'error', message: 'Gagal menganalisis dokumen. Respons dari AI mungkin tidak valid.' });
-    } finally {
-
-        for (const filePath of tempFilePaths) {
-            try {
-                await fs.unlink(filePath);
-                console.log(`[Analysis] File sementara ${filePath} berhasil dihapus.`);
-            } catch (cleanupError) {
-                if (cleanupError.code !== 'ENOENT') {
-                    console.error(`Gagal menghapus file sementara: ${filePath}`, cleanupError);
-                }
-            }
-        }
     }
 };
