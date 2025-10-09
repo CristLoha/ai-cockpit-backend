@@ -17,6 +17,12 @@ const corsOptions = {
 };
 
 app.use(cors(corsOptions));
+
+app.use((req, res, next) => {
+    console.log(`--- REQUEST DITERIMA DI INDEX.JS: ${req.method} ${req.path} ---`);
+    next();
+});
+
 app.use(express.json());
 
 app.get('/', (req, res) => {
