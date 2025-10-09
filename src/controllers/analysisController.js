@@ -43,7 +43,7 @@ export const handleAnalysisRequest = async (req, res) => {
         if (file.mimetype === 'application/pdf') {
             const pdfExtract = new PDFExtract();
 
-            const data = await pdfExtract.extract(file.buffer, {});
+            const data = await pdfExtract.extractBuffer(file.buffer, {});
             console.log('[Analysis] Ekstraksi teks dari PDF selesai.');
             documentText = data.pages.map(page => page.content.map(item => item.str).join(' ')).join('\n\n');
         } else if (file.mimetype === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document') {

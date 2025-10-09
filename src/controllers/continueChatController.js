@@ -34,10 +34,10 @@ export const handleContinueChat = async (req, res) => {
             Rangkuman: "${analysisData.summary}".
             Poin-Poin Kunci: ${analysisData.keyPoints.join('; ')}.
             Kata Kunci: ${analysisData.keywords.join(', ')}.`;
-            masterPrompt = `Kamu adalah asisten AI yang ahli dalam menganalisis jurnal. Jawab pertanyaan pengguna berdasarkan konteks dokumen yang telah dianalisis berikut. Jawabanmu harus singkat, padat, dan relevan. Konteks: """${analysisContext}""" Pertanyaan Pengguna: "${userQuestion}"`;
+            masterPrompt = `Kamu adalah asisten AI yang ahli dalam menganalisis jurnal. Jawab pertanyaan pengguna HANYA berdasarkan konteks dokumen yang telah dianalisis berikut. Jawabanmu harus singkat, padat, dan relevan. Jika pertanyaan pengguna tidak relevan dengan konteks dokumen, tolak dengan sopan untuk menjawab dan ingatkan pengguna untuk bertanya sesuai topik jurnal. Konteks: """${analysisContext}""" Pertanyaan Pengguna: "${userQuestion}"`;
         } else {
 
-            masterPrompt = `Lanjutkan percakapan ini dan jawab pertanyaan terakhir pengguna berdasarkan konteks riwayat sebelumnya. Riwayat: """${historyText}""" Pertanyaan Baru: "${userQuestion}"`;
+            masterPrompt = `Lanjutkan percakapan ini dan jawab pertanyaan terakhir pengguna. Fokus HANYA pada konteks jurnal yang sedang dibahas dalam riwayat. Jika pertanyaan baru keluar dari topik, tolak dengan sopan untuk menjawab dan ingatkan pengguna untuk tetap pada topik. Riwayat: """${historyText}""" Pertanyaan Baru: "${userQuestion}"`;
         }
 
 

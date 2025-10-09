@@ -1,16 +1,30 @@
 import admin from 'firebase-admin';
-import fs from 'fs';
-import path from 'path';
-import { fileURLToPath } from 'url';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-const serviceAccountPath = path.join(__dirname, 'serviceAccountKey.json');
-const serviceAccount = JSON.parse(fs.readFileSync(serviceAccountPath, 'utf8'));
+// Hanya inisialisasi jika belum ada aplikasi yang berjalan
+if (!admin.apps.length) {
+  try {
+    if (process.env.FIREBASE_SERVICE_ACCOUNT) {
+      // Lingkungan produksi (Vercel)
+      console.log('[Firebase] Initializing from environment variable...');
+      const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT);
+      admin.initializeApp({
+        credential: admin.credential.cert(serviceAccount)
+      });
+    } else {
+      // Lingkungan lokal (menggunakan file)
+      console.log('[Firebase] Initializing from local service account file...');
+      // Ganti `assert` dengan `with` untuk Node.js v20+
+      const { default: serviceAccount } = await import('./serviceAccountKey.json', {
+        with: { type: 'json' }
+      });
+      admin.initializeApp({
+        credential: admin.credential.cert(serviceAccount)
+      });
+    }
+  } catch (error) {
+    console.error('Firebase Admin SDK initialization failed:', error);
+  }
+}
 
-
-admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount)
-});
 
 export default admin;
