@@ -12,15 +12,12 @@ export const handleContinueChat = async (req, res) => {
         if (!userQuestion || !chatId) {
             return res.status(400).json({ message: 'Pertanyaan dan ID Chat dibutuhkan.' });
         }
-
         const chatDocRef = db.collection('users').doc(userId).collection('chats').doc(chatId);
         const messagesCollectionRef = chatDocRef.collection('messages');
-
 
         await messagesCollectionRef.add({
             sender: 'user', text: userQuestion, timestamp: new Date()
         });
-
 
         const messagesSnapshot = await messagesCollectionRef.orderBy('timestamp', 'desc').limit(10).get();
         const history = messagesSnapshot.docs.map(doc => doc.data()).reverse();

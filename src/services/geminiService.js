@@ -3,7 +3,6 @@ import { GoogleGenerativeAIFetchError } from '@google/generative-ai';
 
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-
 const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
 export const generateAiResponse = async (prompt) => {
@@ -32,7 +31,6 @@ export const generateAiResponse = async (prompt) => {
             }
         }
     }
-
 
     throw new Error(`Gagal berkomunikasi dengan AI setelah ${maxRetries} percobaan.`);
 };

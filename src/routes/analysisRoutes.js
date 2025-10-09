@@ -17,9 +17,6 @@ router.use(verifyAuthToken);
 
 
 router.post('/analyze', upload.single('document'), handleAnalysisRequest);
-
-
-
 router.post('/chat/continue/:chatId', handleContinueChat);
 
 
