@@ -13,9 +13,8 @@ const upload = multer({
     }
 });
 
-router.use(verifyAuthToken);
-router.post('/analyze', upload.single('document'), handleAnalysisRequest);
-router.post('/chat/continue/:chatId', handleContinueChat);
 
+router.post('/analyze', verifyAuthToken, upload.single('document'), handleAnalysisRequest);
+router.post('/chat/continue/:chatId', verifyAuthToken, handleContinueChat);
 
 export default router;
