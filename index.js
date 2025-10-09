@@ -23,3 +23,5 @@ app.use('/api', historyRoutes);
 app.listen(port, () => {
     console.log(`Server arsitektur baru siap di http://localhost:${port}`);
 });
+
+export default app;
