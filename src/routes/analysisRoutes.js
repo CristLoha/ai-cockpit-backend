@@ -15,11 +15,11 @@ const upload = multer({
 
 router.use(verifyAuthToken);
 
-// Memulai sesi baru dengan analisis dokumen
+
 router.post('/analyze', upload.single('document'), handleAnalysisRequest);
 
 
-// Melanjutkan tanya jawab di chat yang sudah ada
+
 router.post('/chat/continue/:chatId', handleContinueChat);
 
 

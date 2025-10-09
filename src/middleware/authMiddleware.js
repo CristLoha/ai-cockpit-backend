@@ -16,17 +16,14 @@ export const verifyAuthToken = async (req, res, next) => {
         }
     }
 
-
     const deviceId = req.headers['x-device-id'];
     if (deviceId) {
         try {
             const usageDoc = await db.collection('guestUsage').doc(deviceId).get();
-            // Cek apakah kuota sudah habis.
-            // Kita tidak menambah kuota di sini, hanya mengecek.
             if (usageDoc.exists && usageDoc.data().count >= GUEST_USAGE_LIMIT) {
                 return res.status(429).send({ message: 'Batas penggunaan tamu tercapai. Silakan Sign In untuk melanjutkan.' });
             }
-            // Jika tamu masih punya kuota, lampirkan identitas tamu ke request.
+
             req.user = { uid: deviceId, isGuest: true };
             return next();
         } catch (error) {
@@ -35,6 +32,5 @@ export const verifyAuthToken = async (req, res, next) => {
         }
     }
 
-    // Jika tidak ada token dan tidak ada deviceId
     return res.status(401).send({ message: 'Akses ditolak. Token atau Device ID tidak ditemukan.' });
 };

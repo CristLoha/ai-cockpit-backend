@@ -4,7 +4,6 @@ import { PDFExtract } from 'pdf.js-extract';
 import { createRequire } from 'node:module';
 import fs from 'fs/promises';
 import path from 'path';
-import { fileURLToPath } from 'url';
 
 const db = admin.firestore();
 const require = createRequire(import.meta.url);
@@ -22,13 +21,13 @@ export const handleAnalysisRequest = async (req, res) => {
     const isGuest = req.user.isGuest;
 
     console.log(`[Analysis] UserID: ${userId}, isGuest: ${isGuest}`);
-    // Jika pengguna adalah tamu, perbarui hitungan penggunaannya.
+
     if (isGuest) {
         const usageDocRef = db.collection('guestUsage').doc(userId);
         const usageDoc = await usageDocRef.get();
 
         if (!usageDoc.exists) {
-            // Dokumen penggunaan pertama untuk tamu ini
+
             await usageDocRef.set({ count: 1, firstRequestAt: new Date() });
         } else {
             const newCount = (usageDoc.data().count || 0) + 1;
@@ -98,16 +97,16 @@ export const handleAnalysisRequest = async (req, res) => {
 
         let analysisResult;
         try {
-            // Mencoba membersihkan dan mem-parsing JSON dari respons AI
+
             const cleanedJsonString = aiJsonResponse.replace(/```json/g, '').replace(/```/g, '').trim();
             if (!cleanedJsonString) {
                 throw new Error("Respons AI kosong setelah dibersihkan.");
             }
             analysisResult = JSON.parse(cleanedJsonString);
         } catch (parseError) {
-            // Jika parsing gagal, ini adalah error kritis.
+
             console.error("Gagal mem-parsing JSON dari AI:", parseError, "Respons mentah:", aiJsonResponse);
-            // Memberi tahu pengguna bahwa ada masalah dengan format respons AI
+
             return res.status(500).json({ status: 'error', message: 'Gagal memproses hasil analisis dari AI. Coba lagi dengan dokumen yang berbeda.' });
         }
 
@@ -122,7 +121,7 @@ export const handleAnalysisRequest = async (req, res) => {
 
         console.log(`[Analysis] Berhasil menyimpan ke Firestore dengan chatId: ${docRef.id}. Mengirim respons ke frontend...`);
 
-        // PENTING: Kirim createdAt sebagai ISO string agar bisa dibaca Flutter
+
         const responseData = { ...analysisResult, createdAt: createdAtTimestamp.toISOString() };
 
         res.json({

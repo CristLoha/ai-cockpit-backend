@@ -8,7 +8,7 @@ const router = Router();
 
 router.use(verifyAuthToken);
 
-// Rute untuk mendapatkan DAFTAR SEMUA riwayat analisis (untuk halaman "Perpustakaan")
+
 router.get('/chats', getChatHistory);
 
 router.get('/chats/:chatId', getChatMessages);
