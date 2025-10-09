@@ -4,6 +4,12 @@ const db = admin.firestore();
 const GUEST_USAGE_LIMIT = 5;
 
 export const verifyAuthToken = async (req, res, next) => {
+    // --- TAMBAHKAN KODE MATA-MATA DI SINI ---
+    console.log("===================================");
+    console.log("INCOMING HEADERS ON VERCEL:", req.headers);
+    console.log("===================================");
+    // --- AKHIR KODE MATA-MATA ---
+
     const token = req.headers.authorization?.split('Bearer ')[1];
     if (token) {
         try {
