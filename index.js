@@ -31,7 +31,7 @@ app.use(express.json());
 app.get('/', (req, res) => {
     const __filename = fileURLToPath(import.meta.url);
     const __dirname = path.dirname(__filename);
-    const docPath = path.join(__dirname, 'src', 'views', 'documentation.html');
+    const docPath = path.join(__dirname, 'documentation.html');
 
     fs.readFile(docPath, 'utf8', (err, html) => {
         if (err) {
