@@ -2,7 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import analysisRoutes from './src/routes/analysisRoutes.js';
-import historyRoutes from './src/routes/historyRoutes.js';
+import chatRoutes from './src/routes/historyRoutes.js'; // Mengganti nama variabel agar lebih jelas
 
 dotenv.config();
 
@@ -31,8 +31,7 @@ app.get('/', (req, res) => {
 
 
 app.use('/api', analysisRoutes);
-app.use('/api', historyRoutes);
-
+app.use('/api', chatRoutes); 
 app.listen(port, () => {
     console.log(`Server arsitektur baru siap di http://localhost:${port}`);
 });
