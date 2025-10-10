@@ -2,8 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import analysisRoutes from './src/routes/analysisRoutes.js';
-import chatRoutes from './src/routes/historyRoutes.js'; // Mengganti nama variabel agar lebih jelas
-
+import chatRoutes from './src/routes/historyRoutes.js'; 
 dotenv.config();
 
 const app = express();
