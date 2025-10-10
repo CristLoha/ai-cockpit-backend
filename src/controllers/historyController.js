@@ -109,11 +109,8 @@ export const deleteChat = async (req, res) => {
         const chatDocRef = db.collection('users').doc(userId).collection('chats').doc(chatId);
         const messagesCollectionRef = chatDocRef.collection('messages');
 
-        // Delete all messages in the subcollection first
         await deleteCollection(messagesCollectionRef, 100);
         console.log(`[History] Sub-koleksi 'messages' untuk chat ${chatId} berhasil dihapus.`);
-
-        // Then delete the chat document itself
         await chatDocRef.delete();
         console.log(`[History] Dokumen chat ${chatId} berhasil dihapus.`);
 
@@ -130,8 +127,8 @@ export const deleteAllChats = async (req, res) => {
         console.log(`[History] Memulai penghapusan SEMUA chat untuk user: ${userId}`);
 
         const chatsCollectionRef = db.collection('users').doc(userId).collection('chats');
-        
-        // This helper will handle deleting subcollections for each chat document.
+
+
         await deleteCollection(chatsCollectionRef, 100);
 
         res.status(200).json({ message: 'Semua riwayat percakapan berhasil dihapus.' });
