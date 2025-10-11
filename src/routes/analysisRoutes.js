@@ -15,7 +15,19 @@ const upload = multer({
 });
 
 
-router.post('/analyze', verifyAuthToken, upload.single('document'), handleAnalysisRequest);
+const handleUploadErrors = (err, req, res, next) => {
+    if (err instanceof multer.MulterError) {
+        if (err.code === 'LIMIT_FILE_SIZE') {
+            return res.status(413).json({ message: `Ukuran file melebihi batas maksimal ${MAX_FILE_SIZE / 1024 / 1024} MB.` });
+        }
+        return res.status(400).json({ message: `Error upload file: ${err.message}` });
+    } else if (err) {
+        return res.status(500).json({ message: 'Terjadi kesalahan pada server saat mengunggah file.' });
+    }
+    next();
+};
+
+router.post('/analyze', verifyAuthToken, upload.single('document'), handleUploadErrors, handleAnalysisRequest);
 router.post('/chat/continue/:chatId', verifyAuthToken, handleContinueChat);
 
 export default router;
