@@ -1,7 +1,7 @@
 import admin from '../config/firebase.js';
+import { GUEST_USAGE_LIMIT } from '../config/constants.js';
 
 const db = admin.firestore();
-const GUEST_USAGE_LIMIT = 3;
 
 export const verifyAuthToken = async (req, res, next) => {
 

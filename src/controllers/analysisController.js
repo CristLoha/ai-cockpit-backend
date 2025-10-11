@@ -1,10 +1,9 @@
 import admin from '../config/firebase.js';
 import { generateAiResponse } from '../services/geminiService.js';
 import { PDFExtract } from 'pdf.js-extract';
+import mammoth from 'mammoth';
 
 const db = admin.firestore();
-import mammoth from 'mammoth';
-const GUEST_USAGE_LIMIT = 5;
 
 export const handleAnalysisRequest = async (req, res) => {
     console.log('[Analysis] Menerima permintaan analisis baru...');
@@ -27,9 +26,6 @@ export const handleAnalysisRequest = async (req, res) => {
             await usageDocRef.set({ count: 1, firstRequestAt: new Date() });
         } else {
             const newCount = (usageDoc.data().count || 0) + 1;
-            if (newCount > GUEST_USAGE_LIMIT) {
-                return res.status(429).send({ message: 'Batas penggunaan tamu tercapai. Silakan Sign In untuk melanjutkan.' });
-            }
             await usageDocRef.update({ count: newCount });
         }
     }
