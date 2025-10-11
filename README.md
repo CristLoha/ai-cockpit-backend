@@ -55,7 +55,7 @@ src
 Semua endpoint memerlukan autentikasi.
 
 - **Pengguna Terdaftar**: Kirim header `Authorization: Bearer [FIREBASE_ID_TOKEN]`.
-- **Pengguna Tamu**: Kirim header `x-device-id: [UNIQUE_DEVICE_ID]`. Batas penggunaan adalah **5 kali** permintaan.
+- **Pengguna Tamu**: Kirim header `x-device-id: [UNIQUE_DEVICE_ID]`. Batas penggunaan adalah **3 kali** permintaan.
 
 ### 1. Analisis Dokumen
 
