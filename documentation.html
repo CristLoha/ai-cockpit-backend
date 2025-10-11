@@ -83,7 +83,7 @@
         <p>Selamat datang di dokumentasi API untuk <strong>AI Cockpit v2</strong>.</p>
 
         <h3>Base URL</h3>
-        <p><code>{{BASE_URL}}</code></p>
+        <p><code>https://ai-cockpit-backend.vercel.app/</code></p>
 
         <h3>Autentikasi</h3>
         <p>Semua endpoint yang terdaftar di sini memerlukan autentikasi. Ada dua metode yang didukung:</p>
@@ -99,10 +99,11 @@
         </p>
         <ul>
             <li><strong>Header Wajib:</strong> <code>x-device-id</code></li>
-            <li><strong>Batas Penggunaan:</strong> Tamu hanya dapat melakukan <strong>5 kali</strong> permintaan
+            <li><strong>Batas Penggunaan:</strong> Tamu hanya dapat melakukan <strong>3 kali</strong> permintaan
                 analisis atau chat.</li>
             <li><strong>Jika Batas Terlampaui:</strong> Server akan merespons dengan status code
-                <code>429 Too Many Requests</code>.</li>
+                <code>429 Too Many Requests</code>.
+            </li>
         </ul>
         <p><strong>Contoh Header:</strong> <code>x-device-id: 123e4567-e89b-12d3-a456-426614174000</code></p>
 
@@ -110,7 +111,7 @@
         <div class="endpoint">
             <h2><span class="method post">POST</span> /api/analyze</h2>
             <p>Mengunggah dan menganalisis dokumen (PDF/DOCX). Endpoint ini akan memulai sesi chat baru.</p>
-            <p><strong>Full URL:</strong> <code>{{BASE_URL}}/api/analyze</code></p>
+            <p><strong>Full URL:</strong> <code>https://ai-cockpit-backend.vercel.app/api/analyze</code></p>
             <p><strong>Body:</strong> <code>multipart/form-data</code> dengan field <code>document</code> berisi file.
             </p>
         </div>
@@ -118,32 +119,35 @@
         <div class="endpoint">
             <h2><span class="method post">POST</span> /api/chat/continue/:chatId</h2>
             <p>Mengirimkan pertanyaan lanjutan dalam sebuah sesi chat yang sudah ada.</p>
-            <p><strong>Full URL:</strong> <code>{{BASE_URL}}/api/chat/continue/&lt;chatId&gt;</code></p>
+            <p><strong>Full URL:</strong>
+                <code>https://ai-cockpit-backend.vercel.app/api/chat/continue/&lt;chatId&gt;</code></p>
             <p><strong>Body:</strong> JSON <code>{ "userQuestion": "Isi pertanyaan Anda di sini" }</code></p>
         </div>
 
         <div class="endpoint">
             <h2><span class="method get">GET</span> /api/chats</h2>
             <p>Mengambil daftar semua riwayat percakapan (chat history) milik pengguna.</p>
-            <p><strong>Full URL:</strong> <code>{{BASE_URL}}/api/chats</code></p>
+            <p><strong>Full URL:</strong> <code>https://ai-cockpit-backend.vercel.app/api/chats</code></p>
         </div>
 
         <div class="endpoint">
             <h2><span class="method get">GET</span> /api/chats/:chatId</h2>
             <p>Mengambil detail pesan dari satu percakapan spesifik.</p>
-            <p><strong>Full URL:</strong> <code>{{BASE_URL}}/api/chats/&lt;chatId&gt;</code></p>
+            <p><strong>Full URL:</strong> <code>https://ai-cockpit-backend.vercel.app/api/chats/&lt;chatId&gt;</code>
+            </p>
         </div>
 
         <div class="endpoint">
             <h2><span class="method delete">DELETE</span> /api/chats/:chatId</h2>
             <p>Menghapus satu percakapan spesifik dari riwayat.</p>
-            <p><strong>Full URL:</strong> <code>{{BASE_URL}}/api/chats/&lt;chatId&gt;</code></p>
+            <p><strong>Full URL:</strong> <code>https://ai-cockpit-backend.vercel.app/api/chats/&lt;chatId&gt;</code>
+            </p>
         </div>
 
         <div class="endpoint">
             <h2><span class="method delete">DELETE</span> /api/chats</h2>
             <p>Menghapus <strong>semua</strong> riwayat percakapan milik pengguna.</p>
-            <p><strong>Full URL:</strong> <code>{{BASE_URL}}/api/chats</code></p>
+            <p><strong>Full URL:</strong> <code>https://ai-cockpit-backend.vercel.app/api/chats</code></p>
         </div>
     </div>
 </body>
