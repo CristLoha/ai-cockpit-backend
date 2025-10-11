@@ -89,15 +89,20 @@
         <p>Semua endpoint yang terdaftar di sini memerlukan autentikasi. Ada dua metode yang didukung:</p>
 
         <h4>1. Pengguna Terdaftar (Logged-in)</h4>
-        <p>Kirim header <code>Authorization</code> dengan ID Token yang didapat dari Firebase Authentication setelah pengguna login.</p>
+        <p>Kirim header <code>Authorization</code> dengan ID Token yang didapat dari Firebase Authentication setelah
+            pengguna login.</p>
         <p><strong>Contoh Header:</strong> <code>Authorization: Bearer [ID_TOKEN_PENGGUNA]</code></p>
 
         <h4>2. Tamu (Guest)</h4>
-        <p>Tamu dapat menggunakan API dengan batasan. Setiap request dari tamu harus menyertakan header <code>x-device-id</code> yang berisi ID unik untuk perangkatnya (misalnya UUID yang dibuat di sisi klien).</p>
+        <p>Tamu dapat menggunakan API dengan batasan. Setiap request dari tamu harus menyertakan header
+            <code>x-device-id</code> yang berisi ID unik untuk perangkatnya (misalnya UUID yang dibuat di sisi klien).
+        </p>
         <ul>
             <li><strong>Header Wajib:</strong> <code>x-device-id</code></li>
-            <li><strong>Batas Penggunaan:</strong> Tamu hanya dapat melakukan <strong>5 kali</strong> permintaan analisis atau chat.</li>
-            <li><strong>Jika Batas Terlampaui:</strong> Server akan merespons dengan status code <code>429 Too Many Requests</code>.</li>
+            <li><strong>Batas Penggunaan:</strong> Tamu hanya dapat melakukan <strong>5 kali</strong> permintaan
+                analisis atau chat.</li>
+            <li><strong>Jika Batas Terlampaui:</strong> Server akan merespons dengan status code
+                <code>429 Too Many Requests</code>.</li>
         </ul>
         <p><strong>Contoh Header:</strong> <code>x-device-id: 123e4567-e89b-12d3-a456-426614174000</code></p>
 
