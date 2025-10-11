@@ -58,16 +58,18 @@ export const handleAnalysisRequest = async (req, res) => {
 
         if (!documentText.trim()) {
             console.error('[Analysis] Teks dari dokumen kosong setelah ekstraksi.');
-            return res.status(500).json({ message: 'Gagal mengekstrak teks dari dokumen. File mungkin kosong atau rusak.' });
+            return res.status(422).json({ message: 'Kami tidak dapat menemukan teks di dalam dokumen Anda. Mohon pastikan file tersebut bukan dokumen hasil pindaian (scan), tidak kosong, dan tidak terproteksi.' });
         }
         console.log(`[Analysis] Teks berhasil diekstrak, panjang: ${documentText.length}. Mengirim ke AI...`);
 
 
         const analysisPrompt = `
-        Analisis dokumen akademik berikut secara komprehensif. Berdasarkan teks, ekstrak informasi berikut dan berikan jawaban dalam format JSON yang valid dan HANYA JSON.
+        Tugas Anda adalah menganalisis dokumen akademik. Pertama, tentukan apakah teks berikut adalah sebuah jurnal penelitian primer (dokumen asli) atau hanya sebuah laporan/rangkuman tentang sebuah jurnal.
+        Kemudian, ekstrak informasi berikut dan berikan jawaban dalam format JSON yang valid dan HANYA JSON.
         Pastikan semua nilai (value) dalam JSON adalah string atau array of strings.
 
         JSON harus memiliki kunci berikut:
+        - "isPrimarySource" (boolean): Setel ke 'true' jika ini adalah jurnal penelitian asli, dan 'false' jika ini hanyalah laporan, ringkasan, atau hasil analisis dari dokumen lain.
         - "title" (string): Judul utama dari paper. Jika tidak ditemukan, isi dengan "Judul Tidak Ditemukan".
         - "authors" (array of strings): Daftar nama-nama penulis. Jika tidak ditemukan, isi dengan array kosong [].
         - "publication" (string): Nama jurnal atau tempat publikasi, termasuk volume dan tahun jika ada. Jika tidak ada, isi string kosong.
@@ -94,9 +96,13 @@ export const handleAnalysisRequest = async (req, res) => {
             analysisResult = JSON.parse(cleanedJsonString);
         } catch (parseError) {
 
-            console.error("Gagal mem-parsing JSON dari AI:", parseError, "Respons mentah:", aiJsonResponse);
+            console.error("Gagal mem-parsing JSON dari AI:", parseError, "Respons mentah:", `"${aiJsonResponse}"`);
 
             return res.status(500).json({ status: 'error', message: 'Gagal memproses hasil analisis dari AI. Coba lagi dengan dokumen yang berbeda.' });
+        }
+        if (analysisResult.isPrimarySource === false) {
+            console.log('[Analysis] Dokumen ditolak karena bukan sumber primer (kemungkinan hasil analisis sebelumnya).');
+            return res.status(422).json({ message: 'Dokumen ini tampaknya merupakan hasil analisis, bukan jurnal penelitian asli. Mohon unggah dokumen jurnal yang sebenarnya.' });
         }
 
         console.log('[Analysis] Berhasil mem-parsing JSON dari AI. Menyimpan ke Firestore...');
