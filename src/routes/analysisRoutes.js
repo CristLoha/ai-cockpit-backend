@@ -3,7 +3,7 @@ import multer from 'multer';
 import { handleAnalysisRequest } from '../controllers/analysisController.js';
 import { handleContinueChat } from '../controllers/continueChatController.js';
 import { verifyAuthToken } from '../middleware/authMiddleware.js';
-import { apiLimiter } from '../middleware/rateLimiter.js'; // Impor rate limiter
+import { apiLimiter } from '../middleware/rateLimiter.js'; 
 import { MAX_FILE_SIZE } from '../config/constants.js';
 
 const router = Router();
