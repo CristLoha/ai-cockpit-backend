@@ -6,16 +6,27 @@ const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
 export const generateAiResponse = async (prompt) => {
-    const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
+    // Mengambil nama model dari environment variable, dengan 'gemini-2.5-flash' sebagai default.
+    // Menerapkan fleksibilitas ini memungkinkan penggantian model (misal: ke versi Pro) melalui file .env tanpa mengubah kode.
+    const modelName = process.env.GEMINI_MODEL || 'gemini-2.5-flash';
+    const model = genAI.getGenerativeModel({ model: modelName });
     const maxRetries = 3;
     let attempt = 0;
 
     while (attempt < maxRetries) {
         try {
+            console.log(`[Gemini Service] Mencoba membuat konten dengan model: ${modelName} (Percobaan ${attempt + 1})`);
             const result = await model.generateContent(prompt);
             const response = result.response;
+
+            // Mengekstrak metadata penggunaan token untuk keperluan logging dan analisis biaya.
+            const usageMetadata = response.usageMetadata;
+            if (usageMetadata) {
+                console.log(`[Gemini Service] Penggunaan Token: ${usageMetadata.totalTokenCount} (Prompt: ${usageMetadata.promptTokenCount}, Kandidat: ${usageMetadata.candidatesTokenCount})`);
+            }
+
             const text = response.text();
-            return text;
+            return { text, usageMetadata };
         } catch (error) {
             attempt++;
 

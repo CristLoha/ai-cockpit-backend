@@ -19,6 +19,7 @@
     "docx": "^9.5.1",
     "dotenv": "^17.2.3",
     "express": "^5.1.0",
+    "express-rate-limit": "^8.1.0",
     "firebase-admin": "^13.5.0",
     "mammoth": "^1.11.0",
     "multer": "^2.0.2",

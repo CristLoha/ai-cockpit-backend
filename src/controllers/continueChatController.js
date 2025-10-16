@@ -41,11 +41,14 @@ export const handleContinueChat = async (req, res) => {
         }
 
 
-        const aiTextResponse = await generateAiResponse(masterPrompt);
+        const { text: aiTextResponse, usageMetadata } = await generateAiResponse(masterPrompt);
 
 
         await messagesCollectionRef.add({
-            sender: 'ai', text: aiTextResponse, timestamp: new Date()
+            sender: 'ai',
+            text: aiTextResponse,
+            timestamp: new Date(),
+            tokenUsage: usageMetadata, 
         });
 
         res.json({ status: 'success', answer: aiTextResponse, chatId: chatId });
