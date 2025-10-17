@@ -3,7 +3,7 @@ import multer from 'multer';
 import { handleAnalysisRequest } from '../controllers/analysisController.js';
 import { handleContinueChat } from '../controllers/continueChatController.js';
 import { verifyAuthToken } from '../middleware/authMiddleware.js';
-import { apiLimiter } from '../middleware/rateLimiter.js'; 
+import { apiLimiter, analysisLimiter } from '../middleware/rateLimiter.js';
 import { MAX_FILE_SIZE } from '../config/constants.js';
 
 const router = Router();
@@ -28,8 +28,10 @@ const handleUploadErrors = (err, req, res, next) => {
     next();
 };
 
-// Menerapkan rate limiter setelah otentikasi
-router.post('/analyze', verifyAuthToken, apiLimiter, upload.single('document'), handleUploadErrors, handleAnalysisRequest);
+// Menerapkan rate limiter yang lebih longgar (`analysisLimiter`) untuk endpoint analisis dokumen.
+router.post('/analyze', verifyAuthToken, analysisLimiter, upload.single('document'), handleUploadErrors, handleAnalysisRequest);
+
+// Menerapkan rate limiter standar (`apiLimiter`) untuk endpoint chat yang lebih ringan.
 router.post('/chat/continue/:chatId', verifyAuthToken, apiLimiter, handleContinueChat);
 
 export default router;
