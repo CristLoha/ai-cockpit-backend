@@ -25,7 +25,13 @@ export const generateAiResponse = async (prompt) => {
                 console.log(`[Gemini Service] Penggunaan Token: ${usageMetadata.totalTokenCount} (Prompt: ${usageMetadata.promptTokenCount}, Kandidat: ${usageMetadata.candidatesTokenCount})`);
             }
 
-            const text = response.text();
+            // Pengecekan keamanan untuk memastikan response.text() adalah fungsi yang valid
+            if (typeof response.text !== 'function') {
+                console.error("[Gemini Service] Respons dari AI tidak memiliki fungsi text(). Respons:", JSON.stringify(response));
+                throw new Error("Menerima format respons yang tidak valid dari AI.");
+            }
+
+            const text = response.text(); // Ini akan mengembalikan string
             return { text, usageMetadata };
         } catch (error) {
             attempt++;

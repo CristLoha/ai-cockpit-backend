@@ -78,19 +78,25 @@ export const handleAnalysisRequest = async (req, res) => {
         Teks Dokumen: """${documentText}"""
         `;
 
-        const aiJsonResponse = await generateAiResponse(analysisPrompt);
+        const { text: aiJsonResponse, usageMetadata } = await generateAiResponse(analysisPrompt);
         console.log('[Analysis] Menerima respons dari AI.');
 
 
         let analysisResult;
         try {
+            // Pastikan aiJsonResponse adalah string sebelum memprosesnya.
+            // Terkadang, jika ada masalah dengan respons AI, ini bisa menjadi undefined atau bukan string.
+            if (typeof aiJsonResponse !== 'string') {
+                console.error("Respons dari AI bukan string, melainkan:", typeof aiJsonResponse, aiJsonResponse);
+                throw new Error("Menerima tipe data yang tidak valid dari layanan AI.");
+            }
 
             const cleanedJsonString = aiJsonResponse.replace(/```json/g, '').replace(/```/g, '').trim();
             if (!cleanedJsonString) {
                 throw new Error("Respons AI kosong setelah dibersihkan.");
             }
             analysisResult = JSON.parse(cleanedJsonString);
-        } catch (parseError) {
+        } catch (parseError) { // Mengganti nama variabel error agar lebih spesifik
 
             console.error("Gagal mem-parsing JSON dari AI:", parseError, "Respons mentah:", `"${aiJsonResponse}"`);
 
@@ -107,6 +113,7 @@ export const handleAnalysisRequest = async (req, res) => {
         const docRef = await db.collection('users').doc(userId).collection('chats').add({
             ...analysisResult,
             originalFileName: file.originalname,
+            initialTokenUsage: usageMetadata, // Menyimpan informasi penggunaan token awal
             createdAt: createdAtTimestamp,
         });
 
@@ -123,6 +130,10 @@ export const handleAnalysisRequest = async (req, res) => {
 
     } catch (error) {
         console.error("Analysis Controller Error:", error);
-        res.status(500).json({ status: 'error', message: 'Gagal menganalisis dokumen. Respons dari AI mungkin tidak valid.' });
+        // Memberikan pesan error yang lebih spesifik jika memungkinkan
+        const errorMessage = error.message.includes("AI")
+            ? error.message
+            : 'Terjadi kesalahan internal saat memproses dokumen Anda.';
+        res.status(500).json({ status: 'error', message: errorMessage });
     }
 };
