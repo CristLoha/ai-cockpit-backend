@@ -38,3 +38,31 @@ export const apiLimiter = rateLimit({
         });
     },
 });
+
+// Menerapkan middleware rate limiting yang lebih longgar khusus untuk endpoint analisis dokumen.
+// Endpoint ini lebih berat dan lebih jarang dipanggil, sehingga memerlukan batas yang lebih tinggi.
+export const analysisLimiter = rateLimit({
+    // Menentukan jendela waktu 15 menit.
+    windowMs: 15 * 60 * 1000,
+
+    // Mengizinkan 15 permintaan analisis dalam periode 15 menit.
+    // Ini memberikan ruang yang cukup untuk pengguna melakukan beberapa analisis tanpa terblokir.
+    max: 15,
+
+    // Menggunakan header standar untuk konsistensi.
+    standardHeaders: true,
+    legacyHeaders: false,
+
+    // Menggunakan generator kunci yang sama untuk mengidentifikasi klien.
+    keyGenerator: (req, _res) => {
+        return req.user?.uid || req.headers['x-device-id'] || req.ip;
+    },
+
+    // Menggunakan handler yang sama untuk respons saat batas terlampaui.
+    handler: (_req, res, _next, options) => {
+        res.status(options.statusCode).json({
+            status: 'error',
+            message: 'Terlalu banyak permintaan analisis dokumen. Mohon coba lagi setelah beberapa saat.'
+        });
+    },
+});
