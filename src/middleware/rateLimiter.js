@@ -1,5 +1,5 @@
 
-import rateLimit from 'express-rate-limit';
+import { rateLimit, ipKeyGenerator } from 'express-rate-limit';
 
 // Menerapkan middleware untuk pembatasan tingkat permintaan (rate limiting) pada endpoint API.
 // Konfigurasi ini bertujuan untuk mencegah penyalahgunaan (abuse) dan memastikan ketersediaan layanan
@@ -24,8 +24,9 @@ export const apiLimiter = rateLimit({
     // Mendefinisikan fungsi untuk menghasilkan kunci unik bagi setiap klien.
     // Kunci ini digunakan untuk melacak jumlah permintaan.
     // Prioritasnya adalah: ID pengguna terotentikasi, ID perangkat tamu, atau alamat IP sebagai fallback.
-    keyGenerator: (req, _res) => {
-        return req.user?.uid || req.headers['x-device-id'] || req.ip;
+    keyGenerator: (req, res) => {
+        // Menggunakan ipKeyGenerator untuk menangani IPv6 dengan benar sebagai fallback.
+        return req.user?.uid || req.headers['x-device-id'] || ipKeyGenerator(req.ip);
     },
 
     // Mendefinisikan handler yang akan dieksekusi ketika seorang klien melebihi batas permintaan.
@@ -54,8 +55,9 @@ export const analysisLimiter = rateLimit({
     legacyHeaders: false,
 
     // Menggunakan generator kunci yang sama untuk mengidentifikasi klien.
-    keyGenerator: (req, _res) => {
-        return req.user?.uid || req.headers['x-device-id'] || req.ip;
+    keyGenerator: (req, res) => {
+        // Menggunakan ipKeyGenerator untuk menangani IPv6 dengan benar sebagai fallback.
+        return req.user?.uid || req.headers['x-device-id'] || ipKeyGenerator(req.ip);
     },
 
     // Menggunakan handler yang sama untuk respons saat batas terlampaui.
